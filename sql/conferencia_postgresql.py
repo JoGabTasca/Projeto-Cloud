@@ -1,13 +1,12 @@
-# Arquivo para conferir se os dados foram realmente inseridos no PostgreSQL
+# Arquivo para conferir se os dados foram realmente inseridos no MySQL Azure
 
 from sqlalchemy import text
-from db_write import get_engine
+from sql.db_write import get_engine
 
 SQL = """
-select "Ativo","DataPregao","Abertura","Fechamento","PrecoMin","PrecoMax","Volume"
-from b3.cotacoes
-order by "DataPregao" desc, "Ativo" asc
-limit 15;
+select Ativo, DataPregao, Abertura, Fechamento, PrecoMin, PrecoMax, Volume
+from cotacoes
+order by DataPregao desc, Ativo asc;
 """
 
 def main():

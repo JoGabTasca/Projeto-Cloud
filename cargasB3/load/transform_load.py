@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# ALTERAR PARA PEGAR SOMENTE DADOS DO PREGAO A VISTA - pegar a tag correta e carregar no banco de dados somente esses dados
 
 from datetime import datetime, date
 from decimal import Decimal, InvalidOperation
@@ -7,8 +8,8 @@ from io import BytesIO
 from typing import List, Dict, Optional
 
 from lxml import etree
-from db_write import persist_quotes
-from load_azure import get_file_from_blob
+from extract.load_azure import get_file_from_blob
+from .db_write import persist_quotes
 
 POINTER_BLOB = "_LATEST_B3_XML.txt"  # escrito pelo extract.py
 
@@ -64,7 +65,23 @@ def parse_pricrpt(xml_bytes: bytes) -> List[Dict]:
         })
     return rows
 
-def main():
+def run(myblob=None):
+    # Se receber um blob diretamente (chamada do Azure Function), processa ele
+    if myblob is not None:
+        blob_name = myblob.name
+        print(f"[INFO] Processando blob recebido diretamente: {blob_name}")
+        xml_bytes = myblob.read()
+        
+        rows = parse_pricrpt(xml_bytes)
+        if not rows:
+            print(f"[WARN] 0 linha(s) extraída(s) de {blob_name}")
+            return
+
+        persist_quotes(rows)
+        print(f"[OK] Gravadas {len(rows)} linha(s) de {blob_name}")
+        return
+    
+    # Caso contrário, usa o ponteiro (chamada manual ou timer)
     # 1) pega o nome do XML mais recente (gravado pelo extract.py)
     pointer_content = get_file_from_blob(POINTER_BLOB)
     blob_name = (pointer_content.decode("utf-8") if isinstance(pointer_content, (bytes, bytearray)) else pointer_content).strip()
@@ -86,4 +103,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run()

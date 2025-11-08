@@ -1,7 +1,8 @@
 import azure.storage.blob as BlobServiceClient
+import os
 
-AZURE_BLOB_CONNECTION = 'DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;'
-BLOB_CONTAINER_NAME = "b3-dados-brutos"
+AZURE_BLOB_CONNECTION = os.getenv("AZURE_CONNECTION_STRING")
+BLOB_CONTAINER_NAME = os.getenv("BLOB_CONTAINER_NAME")
 
 def upload_to_azure(file_name, local_pathe_file):
     service = BlobServiceClient.BlobServiceClient.from_connection_string(AZURE_BLOB_CONNECTION)

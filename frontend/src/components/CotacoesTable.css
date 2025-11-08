@@ -1,0 +1,78 @@
+.table-container {
+  overflow-x: auto;
+  margin: 20px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cotacoes-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  font-size: 14px;
+}
+
+.cotacoes-table thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.cotacoes-table th {
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+.cotacoes-table tbody tr {
+  border-bottom: 1px solid #e0e0e0;
+  transition: background-color 0.2s;
+}
+
+.cotacoes-table tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+.cotacoes-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.cotacoes-table td {
+  padding: 12px 15px;
+}
+
+.cotacoes-table .ativo {
+  font-weight: 600;
+  color: #667eea;
+}
+
+.cotacoes-table .price {
+  text-align: right;
+  font-family: 'Courier New', monospace;
+}
+
+.cotacoes-table .volume {
+  text-align: right;
+  color: #666;
+}
+
+.loading,
+.no-data {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .cotacoes-table {
+    font-size: 12px;
+  }
+
+  .cotacoes-table th,
+  .cotacoes-table td {
+    padding: 8px 10px;
+  }
+}
