@@ -36,6 +36,10 @@ const CotacoesTable = ({ data, loading }) => {
 
   return (
     <div className="table-container">
+      <h3 className="table-title">
+        <span>📋</span>
+        Dados Detalhados de Cotações
+      </h3>
       <table className="cotacoes-table">
         <thead>
           <tr>

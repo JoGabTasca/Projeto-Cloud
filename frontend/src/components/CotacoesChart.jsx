@@ -46,68 +46,80 @@ const CotacoesChart = ({ data, loading }) => {
 
   return (
     <div className="chart-container">
-      <h3 className="chart-title">Histórico de Preços (Últimos 30 Dias)</h3>
-      <ResponsiveContainer width="100%" height={400}>
+      <h3 className="chart-title">
+        <span>📈</span>
+        Histórico de Preços (Últimos 30 Dias)
+      </h3>
+      <ResponsiveContainer width="100%" height={450}>
         <LineChart
           data={chartData}
-          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+          margin={{ top: 10, right: 30, left: 20, bottom: 10 }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--b3-gray-200)" />
           <XAxis
             dataKey="data"
-            stroke="#666"
-            style={{ fontSize: '12px' }}
+            stroke="var(--b3-gray-600)"
+            style={{ fontSize: '12px', fontWeight: '500' }}
+            tick={{ fill: 'var(--b3-gray-600)' }}
           />
           <YAxis
-            stroke="#666"
-            style={{ fontSize: '12px' }}
+            stroke="var(--b3-gray-600)"
+            style={{ fontSize: '12px', fontWeight: '500' }}
+            tick={{ fill: 'var(--b3-gray-600)' }}
             tickFormatter={(value) => `R$ ${value.toFixed(2)}`}
           />
           <Tooltip
             formatter={(value) => formatCurrency(value)}
             contentStyle={{
-              backgroundColor: 'rgba(255, 255, 255, 0.95)',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
+              backgroundColor: 'var(--b3-white)',
+              border: '2px solid var(--b3-gray-300)',
+              borderRadius: '6px',
+              boxShadow: '0 4px 12px var(--b3-shadow)',
+              padding: '12px',
+            }}
+            labelStyle={{
+              color: 'var(--b3-primary)',
+              fontWeight: '700',
+              marginBottom: '8px',
             }}
           />
           <Legend
-            wrapperStyle={{ fontSize: '14px' }}
+            wrapperStyle={{ fontSize: '14px', fontWeight: '500', paddingTop: '20px' }}
             iconType="line"
           />
           <Line
             type="monotone"
             dataKey="Abertura"
-            stroke="#8884d8"
-            strokeWidth={2}
-            dot={{ r: 3 }}
-            activeDot={{ r: 5 }}
+            stroke="var(--b3-accent)"
+            strokeWidth={2.5}
+            dot={{ r: 4, fill: 'var(--b3-accent)' }}
+            activeDot={{ r: 6, fill: 'var(--b3-primary)' }}
             name="Abertura"
           />
           <Line
             type="monotone"
             dataKey="Fechamento"
-            stroke="#82ca9d"
-            strokeWidth={2}
-            dot={{ r: 3 }}
-            activeDot={{ r: 5 }}
+            stroke="var(--b3-success)"
+            strokeWidth={2.5}
+            dot={{ r: 4, fill: 'var(--b3-success)' }}
+            activeDot={{ r: 6, fill: 'var(--b3-primary)' }}
             name="Fechamento"
           />
           <Line
             type="monotone"
             dataKey="Máximo"
-            stroke="#ff7c7c"
-            strokeWidth={1.5}
-            dot={{ r: 2 }}
+            stroke="var(--b3-danger)"
+            strokeWidth={2}
+            dot={{ r: 3, fill: 'var(--b3-danger)' }}
             strokeDasharray="5 5"
             name="Máximo"
           />
           <Line
             type="monotone"
             dataKey="Mínimo"
-            stroke="#ffa726"
-            strokeWidth={1.5}
-            dot={{ r: 2 }}
+            stroke="var(--b3-warning)"
+            strokeWidth={2}
+            dot={{ r: 3, fill: 'var(--b3-warning)' }}
             strokeDasharray="5 5"
             name="Mínimo"
           />

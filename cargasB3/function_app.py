@@ -1,13 +1,12 @@
 import logging
 import azure.functions as func
-import extract.extract as extract
-import load.transform_load as transform_load
 
 app = func.FunctionApp()
 
-@app.timer_trigger(schedule="0/20 * * * * *", arg_name="myTimer", run_on_startup=False,
+@app.timer_trigger(schedule="0 0 20 * * 1-5", arg_name="myTimer", run_on_startup=False,
               use_monitor=False) 
 def extract_b3_trigger(myTimer: func.TimerRequest) -> None:
+    import extract.extract as extract
     try:
         logging.info('Executando extracao arquivos b3.')
         extract.run()
@@ -21,7 +20,6 @@ def extract_b3_trigger(myTimer: func.TimerRequest) -> None:
                   connection="AZURE_CONNECTION_STRING") 
 def load_b3_trigger(myblob: func.InputStream):
     logging.info(f'Iniciando processo de transformacao e carga dos dados B3 para: {myblob.name}')
+    import load.transform_load as transform_load
     transform_load.run(myblob)
-    logging.info(f"Python blob trigger function processed blob"
-                f"Name: {myblob.name}"
-                f"Blob Size: {myblob.length} bytes")
+    logging.info(f"Processo de transformacao e carga dos dados B3 concluido com sucesso para: {myblob.name}")

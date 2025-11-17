@@ -1,78 +1,133 @@
 .table-container {
   overflow-x: auto;
-  margin: 20px 0;
+  margin: 24px 0;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 12px var(--b3-shadow);
+  border: 1px solid var(--b3-gray-200);
+  background: var(--b3-white);
+  padding: 28px;
+}
+
+.table-title {
+  margin: 0 0 24px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--b3-primary);
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--b3-gray-200);
 }
 
 .cotacoes-table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
+  background: var(--b3-white);
   font-size: 14px;
 }
 
 .cotacoes-table thead {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--b3-primary);
+  color: var(--b3-white);
 }
 
 .cotacoes-table th {
-  padding: 15px;
+  padding: 16px 20px;
   text-align: left;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   font-size: 12px;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
 }
 
+
 .cotacoes-table tbody tr {
-  border-bottom: 1px solid #e0e0e0;
-  transition: background-color 0.2s;
+  border-bottom: 1px solid var(--b3-gray-200);
+  transition: all 0.2s;
 }
 
 .cotacoes-table tbody tr:hover {
-  background-color: #f5f5f5;
+  background-color: var(--b3-gray-50);
+  transform: scale(1.001);
+  box-shadow: 0 2px 4px var(--b3-shadow);
 }
 
 .cotacoes-table tbody tr:last-child {
   border-bottom: none;
 }
 
+.cotacoes-table tbody tr:nth-child(even) {
+  background-color: rgba(0, 51, 102, 0.02);
+}
+
+.cotacoes-table tbody tr:nth-child(even):hover {
+  background-color: var(--b3-gray-50);
+}
+
 .cotacoes-table td {
-  padding: 12px 15px;
+  padding: 14px 20px;
+  color: var(--b3-gray-700);
 }
 
 .cotacoes-table .ativo {
-  font-weight: 600;
-  color: #667eea;
+  font-weight: 700;
+  color: var(--b3-primary);
+  font-size: 15px;
+  letter-spacing: 0.5px;
 }
 
 .cotacoes-table .price {
   text-align: right;
-  font-family: 'Courier New', monospace;
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-weight: 600;
+  color: var(--b3-gray-800);
 }
 
 .cotacoes-table .volume {
   text-align: right;
-  color: #666;
+  color: var(--b3-gray-600);
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 13px;
 }
 
 .loading,
 .no-data {
   text-align: center;
-  padding: 40px;
-  color: #666;
+  padding: 60px 40px;
+  color: var(--b3-gray-600);
   font-size: 16px;
+  font-weight: 500;
+  background: var(--b3-gray-50);
+  border-radius: 6px;
+  border: 1px dashed var(--b3-gray-300);
 }
 
 @media (max-width: 768px) {
+  .table-container {
+    margin: 20px 0;
+    padding: 20px 16px;
+  }
+
+  .table-title {
+    font-size: 18px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
   .cotacoes-table {
     font-size: 12px;
   }
 
   .cotacoes-table th,
   .cotacoes-table td {
-    padding: 8px 10px;
+    padding: 10px 12px;
+  }
+
+  .cotacoes-table .ativo {
+    font-size: 13px;
   }
 }

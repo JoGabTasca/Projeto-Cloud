@@ -90,31 +90,44 @@ def run():
         print(f"[ERROR] Falha ao extrair arquivos: {str(e)}")
         raise
 
-    # Subir o(s) XML(s) para o Azure Blob Storage
+    # Subir APENAS o arquivo XML renomeado para o Azure Blob Storage
     try:
         arquivos = [f for f in os.listdir(f"{PATH_TO_SAVE}/ARQUIVOSPREGAO_SPRE{dt}") if f.endswith(".xml")]
-        print(f"[INFO] Encontrados {len(arquivos)} arquivo(s) XML para upload")
+        print(f"[INFO] Encontrados {len(arquivos)} arquivo(s) XML no diretório")
         
-        last_xml_name = None
-        for arquivo in arquivos:
-            print(f"[INFO] Enviando {arquivo} para Azure...")
-            upload_to_azure(arquivo, f"{PATH_TO_SAVE}/ARQUIVOSPREGAO_SPRE{dt}/{arquivo}")
-            last_xml_name = arquivo
-        print(f"[OK] Arquivo(s) XML enviado(s) para o Azure Blob Storage com sucesso")
+        if not arquivos:
+            print(f"[WARN] Nenhum arquivo XML encontrado para upload")
+            return
+        
+        # Formato do nome: YYYYMMDD-BolsaB3.xml
+        # dt está no formato YYMMDD (ex: 251114), precisa converter para YYYYMMDD
+        # Assumindo que 25 = 2025
+        ano = "20" + dt[:2]  # 25 -> 2025
+        mes = dt[2:4]        # 11
+        dia = dt[4:6]        # 14
+        novo_nome = f"{ano}{mes}{dia}-BolsaB3.xml"
+        
+        # Processa apenas o primeiro arquivo XML encontrado
+        arquivo_original = arquivos[0]
+        print(f"[INFO] Arquivo original encontrado: {arquivo_original}")
+        print(f"[INFO] Será renomeado para: {novo_nome}")
+        
+        arquivo_local_original = f"{PATH_TO_SAVE}/ARQUIVOSPREGAO_SPRE{dt}/{arquivo_original}"
+        arquivo_local_renomeado = f"{PATH_TO_SAVE}/ARQUIVOSPREGAO_SPRE{dt}/{novo_nome}"
+        
+        # Copia o arquivo com o novo nome localmente (apenas para upload)
+        shutil.copy2(arquivo_local_original, arquivo_local_renomeado)
+        
+        # IMPORTANTE: Salva APENAS o arquivo renomeado no Azure
+        # NÃO salva o arquivo original nem cria _LATEST_B3_XML.txt
+        print(f"[INFO] Enviando APENAS o arquivo renomeado ({novo_nome}) para Azure Blob Storage...")
+        upload_to_azure(novo_nome, arquivo_local_renomeado)
+        
+        print(f"[OK] Arquivo {novo_nome} enviado com sucesso para o Azure Blob Storage")
+        print(f"[INFO] Arquivo original ({arquivo_original}) NÃO foi salvo no blob storage")
     except Exception as e:
         print(f"[ERROR] Falha ao enviar arquivos para Azure: {str(e)}")
         raise
-
-    # >>> NOVO: grava um ponteiro com o nome do último XML enviado
-    try:
-        if last_xml_name:
-            POINTER_LOCAL = os.path.join(PATH_TO_SAVE, "_LATEST_B3_XML.txt")
-            with open(POINTER_LOCAL, "w", encoding="utf-8") as f:
-                f.write(last_xml_name.strip())
-            upload_to_azure("_LATEST_B3_XML.txt", POINTER_LOCAL)
-            print(f"[OK] Ponteiro atualizado: {last_xml_name}")
-    except Exception as e:
-        print(f"[WARNING] Falha ao criar ponteiro (nao critico): {str(e)}")
 
     # Apagar as pastas locais
     try:

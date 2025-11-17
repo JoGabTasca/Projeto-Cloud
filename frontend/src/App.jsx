@@ -74,12 +74,21 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>📈 B3 Cotações Dashboard</h1>
-        <p>Acompanhe o histórico de cotações da Bolsa de Valores</p>
+        <div className="header-content">
+          <div className="header-left">
+            <h1>B3 Cotações Dashboard</h1>
+            <p>Acompanhe o histórico de cotações da Bolsa de Valores brasileira</p>
+          </div>
+          <div className="b3-badge">Dados em Tempo Real</div>
+        </div>
       </header>
 
       <div className="container">
         <div className="search-section">
+          <h2>
+            <span>🔍</span>
+            Buscar Ativo
+          </h2>
           <div className="search-bar">
             <input
               type="text"
@@ -90,11 +99,13 @@ function App() {
               className="search-input"
             />
             <button onClick={() => handleSearch()} className="btn btn-primary">
+              <span>🔎</span>
               Buscar
             </button>
             {ativo && (
               <button onClick={handleClearFilter} className="btn btn-secondary">
-                Limpar Filtro
+                <span>✕</span>
+                Limpar
               </button>
             )}
           </div>
@@ -115,21 +126,28 @@ function App() {
 
         {error && (
           <div className="error-message">
-            ⚠️ {error}
+            <span>⚠️</span>
+            <span>{error}</span>
           </div>
         )}
 
         {!ativo && !loading && cotacoes.length === 0 && !error && (
           <div className="welcome-message">
-            <h2>👋 Bem-vindo ao Dashboard de Cotações B3</h2>
-            <p>Selecione um ativo acima ou use a busca para visualizar os dados.</p>
-            <p className="hint">💡 Dica: Comece com ativos populares como PETR4, VALE3 ou ITUB4</p>
+            <h2>
+              <span>👋</span>
+              Bem-vindo ao Dashboard de Cotações B3
+            </h2>
+            <p>Selecione um ativo acima ou use a busca para visualizar os dados históricos de cotações.</p>
+            <p className="hint">
+              💡 Dica: Comece com ativos populares como PETR4, VALE3 ou ITUB4
+            </p>
           </div>
         )}
 
         {ativo && cotacoes.length > 0 && (
           <div className="filter-info">
-            Exibindo {cotacoes.length} registro(s) para <strong>{ativo}</strong>
+            <span>📊</span>
+            <span>Exibindo {cotacoes.length} registro(s) para <strong>{ativo}</strong></span>
           </div>
         )}
 
