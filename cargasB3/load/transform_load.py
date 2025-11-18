@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# ALTERAR PARA PEGAR SOMENTE DADOS DO PREGAO A VISTA - pegar a tag correta e carregar no banco de dados somente esses dados
+# ALTERA PARA PEGAR SOMENTE DADOS DO PREGAO A VISTA - pegar a tag correta e carregar no banco de dados somente esses dados
 
 from datetime import datetime, date
 from decimal import Decimal, InvalidOperation
@@ -9,10 +9,19 @@ from typing import List, Dict, Optional
 
 from lxml import etree
 import logging
+import re
 from extract.load_azure import get_file_from_blob
 from .db_write import persist_quotes
 
 POINTER_BLOB = "_LATEST_B3_XML.txt"  # escrito pelo extract.py
+TICKER_REGEX = re.compile(r"^[A-Z]{4}[0-9]{1,2}$")
+
+
+def eh_mercado_a_vista(ticker: str) -> bool:
+    """Retorna True apenas para tickers no formato 4 letras + 1 ou 2 dígitos."""
+    if not ticker:
+        return False
+    return bool(TICKER_REGEX.match(ticker.strip().upper()))
 
 def to_decimal(x) -> Optional[Decimal]:
     if x is None:
@@ -46,6 +55,7 @@ def parse_pricrpt(xml_bytes: bytes) -> List[Dict]:
     rows: List[Dict] = []
     total_pricrpts = len(pricrpts)
     mercado_vista_count = 0
+    ticker_format_count = 0
     
     for pr in pricrpts:
         # Extrai o tipo de mercado - pode estar em diferentes tags
@@ -67,6 +77,9 @@ def parse_pricrpt(xml_bytes: bytes) -> List[Dict]:
                 or first_text(pr, './/*[local-name()="TradDt"][1]/text()')
         if not (ativo and dt):
             continue
+        if not eh_mercado_a_vista(ativo):
+            continue
+        ticker_format_count += 1
 
         abertura   = to_decimal(first_text(pr, './/*[local-name()="FrstPric"][1]/text()'))
         fechamento = to_decimal(first_text(pr, './/*[local-name()="LastPric"][1]/text()'))
@@ -86,9 +99,11 @@ def parse_pricrpt(xml_bytes: bytes) -> List[Dict]:
     
     logging.info(f"[INFO] Total de PricRpt encontrados: {total_pricrpts}")
     logging.info(f"[INFO] Registros de mercado à vista (010): {mercado_vista_count}")
+    logging.info(f"[INFO] Registros com ticker formato vista: {ticker_format_count}")
     logging.info(f"[INFO] Registros válidos após filtro: {len(rows)}")
     print(f"[INFO] Total de PricRpt encontrados: {total_pricrpts}")
     print(f"[INFO] Registros de mercado à vista (010): {mercado_vista_count}")
+    print(f"[INFO] Registros com ticker formato vista: {ticker_format_count}")
     print(f"[INFO] Registros válidos após filtro: {len(rows)}")
     
     return rows
