@@ -2,7 +2,7 @@
 ## Repositorio para a materia de Projeto Cloud, quarta manha -> Prof. Rafael
 #### Alunos: 
     - João Gabriel Tasca
-    - Ewerton
+    - Ewerton Arrais
     - Miguel Veiga
 
 

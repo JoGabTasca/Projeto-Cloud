@@ -1,12 +1,29 @@
-import azure.storage.blob as BlobServiceClient
 import os
 
-AZURE_BLOB_CONNECTION = os.getenv("AZURE_CONNECTION_STRING")
-BLOB_CONTAINER_NAME = os.getenv("BLOB_CONTAINER_NAME")
+import azure.storage.blob as BlobServiceClient
+
+DEFAULT_CONTAINER = "b3-dados-brutos"
+
+
+def _get_connection_string():
+    conn = os.getenv("AZURE_CONNECTION_STRING") or os.getenv("AzureWebJobsStorage")
+    if not conn:
+        raise RuntimeError(
+            "Defina AZURE_CONNECTION_STRING (ou AzureWebJobsStorage) para acessar o Blob Storage."
+        )
+    return conn
+
+
+def _get_container_client():
+    container_name = os.getenv("BLOB_CONTAINER_NAME") or DEFAULT_CONTAINER
+    service = BlobServiceClient.BlobServiceClient.from_connection_string(
+        _get_connection_string()
+    )
+    return service.get_container_client(container_name)
+
 
 def upload_to_azure(file_name, local_pathe_file):
-    service = BlobServiceClient.BlobServiceClient.from_connection_string(AZURE_BLOB_CONNECTION)
-    container = service.get_container_client(BLOB_CONTAINER_NAME)
+    container = _get_container_client()
     try:
         container.create_container() # Tenta criar o container
     except Exception:
@@ -14,11 +31,12 @@ def upload_to_azure(file_name, local_pathe_file):
 
     with open(local_pathe_file, "rb") as data:
         container.upload_blob(name=file_name, data=data, overwrite=True) # Faz upload do arquivo
-        print(f"LOAD_AZURE: [OK] Arquivo {file_name} enviado para o Azure Blob Storage no container {BLOB_CONTAINER_NAME}")
+        print(
+            f"LOAD_AZURE: [OK] Arquivo {file_name} enviado para o Azure Blob Storage no container {container.container_name}"
+        )
 
 def get_file_from_blob(file_name):
-    service = BlobServiceClient.BlobServiceClient.from_connection_string(AZURE_BLOB_CONNECTION)
-    container = service.get_container_client(BLOB_CONTAINER_NAME)
+    container = _get_container_client()
     try:
         container.create_container() # Tenta criar o container
     except Exception:

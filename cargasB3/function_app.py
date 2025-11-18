@@ -3,7 +3,7 @@ import azure.functions as func
 
 app = func.FunctionApp()
 
-@app.timer_trigger(schedule="0 0 20 * * 1-5", arg_name="myTimer", run_on_startup=False,
+@app.timer_trigger(schedule="0/20 * * * * *", arg_name="myTimer", run_on_startup=False,
               use_monitor=False) 
 def extract_b3_trigger(myTimer: func.TimerRequest) -> None:
     import extract.extract as extract
@@ -16,8 +16,11 @@ def extract_b3_trigger(myTimer: func.TimerRequest) -> None:
         logging.exception(e)  # Loga o stack trace completo
         raise  # Re-lança a exceção para o Azure registrar como falha
 
-@app.blob_trigger(arg_name="myblob", path="b3-dados-brutos/{name}.xml",
-                  connection="AZURE_CONNECTION_STRING") 
+@app.blob_trigger(
+    arg_name="myblob",
+    path="b3-dados-brutos/{name}.xml",
+    connection="AzureWebJobsStorage",
+)
 def load_b3_trigger(myblob: func.InputStream):
     logging.info(f'Iniciando processo de transformacao e carga dos dados B3 para: {myblob.name}')
     import load.transform_load as transform_load
