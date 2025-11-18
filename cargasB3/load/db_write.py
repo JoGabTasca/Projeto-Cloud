@@ -1,9 +1,12 @@
 from sqlalchemy import create_engine, text
 import os
+import logging
 
 def get_engine():
-    endpoint  = os.getenv("MYSQL_CONNECTION_STRING")
-    # Conexão com MySQL Azure
+    endpoint = os.getenv("MYSQL_CONNECTION_STRING") or "mysql+mysqlconnector://ewjgmv:123senhaS%40@b3-bd-cloud-2025.mysql.database.azure.com:3306/b3_data"
+    if not endpoint:
+        raise RuntimeError("MYSQL_CONNECTION_STRING não está definido e nenhum fallback foi configurado.")
+    logging.info(f"[DB] Usando connection string: {endpoint[:60]}...")
     return create_engine(
         endpoint,
         echo=True  # mostra os INSERT/UPDATE no terminal
