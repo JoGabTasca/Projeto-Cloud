@@ -113,15 +113,11 @@ def run():
         print(f"[INFO] Será renomeado para: {novo_nome}")
         
         arquivo_local_original = f"{PATH_TO_SAVE}/ARQUIVOSPREGAO_SPRE{dt}/{arquivo_original}"
-        arquivo_local_renomeado = f"{PATH_TO_SAVE}/ARQUIVOSPREGAO_SPRE{dt}/{novo_nome}"
         
-        # Copia o arquivo com o novo nome localmente (apenas para upload)
-        shutil.copy2(arquivo_local_original, arquivo_local_renomeado)
-        
-        # IMPORTANTE: Salva APENAS o arquivo renomeado no Azure
-        # NÃO salva o arquivo original nem cria _LATEST_B3_XML.txt
+        # Envia direto e não duplica para evitar o erro de arquivo em uso (WinError 32) ao copiar.
+        # Esse erro estava evitando o upload do arquivo em alguns computadores.
         print(f"[INFO] Enviando APENAS o arquivo renomeado ({novo_nome}) para Azure Blob Storage...")
-        upload_to_azure(novo_nome, arquivo_local_renomeado)
+        upload_to_azure(novo_nome, arquivo_local_original)
         
         print(f"[OK] Arquivo {novo_nome} enviado com sucesso para o Azure Blob Storage")
         print(f"[INFO] Arquivo original ({arquivo_original}) NÃO foi salvo no blob storage")

@@ -5,6 +5,8 @@ import load.transform_load as transform_load
 
 app = func.FunctionApp()
 
+# teste "0/20 * * * * *"
+# correto "0 30 21 * * 1-5"
 @app.timer_trigger(schedule="0 30 21 * * 1-5", arg_name="myTimer", run_on_startup=False,
               use_monitor=False) 
 def extract_b3_trigger(myTimer: func.TimerRequest) -> None:
